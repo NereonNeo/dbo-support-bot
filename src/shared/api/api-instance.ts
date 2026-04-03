@@ -1,12 +1,12 @@
-import { UserModel } from "@/generated/prisma/models";
-import { Context, Bot as GrammyBot } from "grammy";
+import { User } from "@/generated/prisma/client";
+import { Bot as GrammyBot, Context } from "grammy";
 
 export type CustomContext = Context & {
-  user?: UserModel;
+  user?: User;
 };
 
 class CoreBot {
-  readonly bot: GrammyBot;
+  readonly bot: GrammyBot<CustomContext>;
 
   constructor(botId: string) {
     this.bot = new GrammyBot<CustomContext>(botId);
@@ -16,7 +16,7 @@ class CoreBot {
     this.bot.start();
   }
 
-  getSnapshot(): GrammyBot {
+  getSnapshot(): GrammyBot<CustomContext> {
     return this.bot;
   }
 }

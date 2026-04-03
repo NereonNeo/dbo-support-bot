@@ -5,6 +5,7 @@
     "moduleResolution": "Bundler",
 
     "baseUrl": ".",
+    "ignoreDeprecations": "6.0",
     "paths": {
       "@/*": ["./*"]
     },

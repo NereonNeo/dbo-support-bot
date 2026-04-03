@@ -6,8 +6,8 @@
   "scripts": {
     "dev": "export DEBUG='grammy*' && tsx watch ./src/main.ts",
     "format": "prettier --write \"src/**/*.ts\" ",
-    "prisma:generate": "prisma generate --config ./src/app/db/prisma.config.ts",
     "prisma:migrate": "prisma migrate dev --config ./src/app/db/prisma.config.ts",
+    "prisma:generate": "prisma generate --config ./src/app/db/prisma.config.ts",
     "prisma:validate": "prisma validate --config ./src/app/db/prisma.config.ts"
   },
   "keywords": [],

@@ -1,3 +1,9 @@
+import { Language } from "@/generated/prisma/client";
+
 export type ChangeLanguageDTO = {
-  lang: string;
+  lang: Language;
+};
+
+export type ChangeInnDTO = {
+  inn: string;
 };
