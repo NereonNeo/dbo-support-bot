@@ -1,0 +1,10 @@
+{
+  "prettier.configPath": ".prettierrc",
+  "editor.formatOnSave": true,
+  "prettier.useEditorConfig": false,
+  "prettier.requireConfig": true,
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "files.refactoring.autoSave": true
+}
