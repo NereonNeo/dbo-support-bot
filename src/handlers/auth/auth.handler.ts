@@ -1,8 +1,8 @@
 import { Language, UserState } from "@/generated/prisma/client";
 import { CustomContext } from "@/src/shared/api/api-instance";
 import { t } from "@/src/shared/locale/messages";
+import { buildRequestTypeKeyboard } from "@/src/shared/ui/request-type-keyboard";
 import { CallbackQueryContext, CommandContext } from "grammy";
-import { requestHandler } from "../requests/request.entry";
 import { LanguageKeyboard } from "./auth.const";
 import { authService } from "./auth.service";
 
@@ -27,7 +27,8 @@ class AuthHandler {
       return;
     }
 
-    await requestHandler.askRequestType(ctx, user.lang ?? Language.RU);
+    const lang = user.lang ?? Language.RU;
+    await ctx.reply(t(lang, "chooseRequestType"), { reply_markup: buildRequestTypeKeyboard(lang) });
   };
 
   chooseLanguage = async (ctx: CallbackQueryContext<CustomContext>) => {
@@ -35,7 +36,7 @@ class AuthHandler {
     const langRaw = ctx.match[1];
     const lang = langRaw === "ru" ? Language.RU : langRaw === "uz" ? Language.UZ : Language.EN;
 
-    await this.service.changeLanguage(ctx.user.chatId, { lang });
+    await this.service.changeLanguage(ctx.user.telegramId, { lang });
     await ctx.answerCallbackQuery();
     await ctx.reply(t(lang, "askInn"));
   };
@@ -51,8 +52,9 @@ class AuthHandler {
       return;
     }
 
-    await this.service.changeInn(ctx.user.chatId, { inn });
-    await requestHandler.askRequestType(ctx, ctx.user.lang ?? Language.RU);
+    await this.service.changeInn(ctx.user.telegramId, { inn });
+    const lang = ctx.user.lang ?? Language.RU;
+    await ctx.reply(t(lang, "chooseRequestType"), { reply_markup: buildRequestTypeKeyboard(lang) });
   };
 }
 

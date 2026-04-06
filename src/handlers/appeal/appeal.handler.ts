@@ -1,62 +1,41 @@
 import { AttachmentType, Language, RequestType, UserState } from "@/generated/prisma/client";
 import { CustomContext } from "@/src/shared/api/api-instance";
 import { statusLabel, t } from "@/src/shared/locale/messages";
-import { CallbackQueryContext, Context } from "grammy";
-import { buildRequestTypeKeyboard } from "./request.const";
-import { requestService } from "./request.service";
-import { CreateRequestAttachmentDTO } from "./request.types";
+import { buildRequestTypeKeyboard } from "@/src/shared/ui/request-type-keyboard";
+import { appealService } from "./appeal.service";
+import { CreateAppealAttachmentDTO } from "./appeal.types";
 
-type BufferedRequest = {
-  chatId: number;
-  userId: number;
+type BufferedAppeal = {
+  telegramId: number;
+  userId: string;
   lang: Language;
-  type: RequestType;
   text: string | null;
-  attachments: CreateRequestAttachmentDTO[];
+  attachments: CreateAppealAttachmentDTO[];
   timeout: ReturnType<typeof setTimeout>;
 };
 
-class RequestHandler {
-  constructor(private readonly service: typeof requestService) {}
+class AppealHandler {
+  constructor(private readonly service: typeof appealService) {}
 
-  private readonly mediaGroups = new Map<string, BufferedRequest>();
+  private readonly mediaGroups = new Map<string, BufferedAppeal>();
+  private readonly requestType = RequestType.APPEAL;
 
-  askRequestType = async (ctx: Context, lang: Language) => {
-    await ctx.reply(t(lang, "chooseRequestType"), { reply_markup: buildRequestTypeKeyboard(lang) });
-  };
-
-  chooseType = async (ctx: CallbackQueryContext<CustomContext>) => {
+  start = async (ctx: CustomContext) => {
     if (!ctx.user) return;
     const lang = ctx.user.lang ?? Language.RU;
-    if (!ctx.user.inn) {
-      await ctx.answerCallbackQuery();
+    if (!ctx.user.inn || ctx.user.state !== UserState.READY_FOR_REQUEST_TYPE) {
       return;
     }
 
-    const typeRaw = ctx.match[1];
-    const type = typeRaw === "appeal" ? RequestType.APPEAL : RequestType.IMPROVEMENT;
-
-    await this.service.setPendingType(ctx.user.chatId, type);
-    await ctx.answerCallbackQuery();
-    await ctx.reply(t(lang, "askRequestContent"));
+    await this.service.start(ctx.user.telegramId);
+    await ctx.reply(t(lang, "askRequestContent"), { reply_markup: { remove_keyboard: true } });
   };
 
-  handleRequestContent = async (ctx: CustomContext) => {
+  handleContent = async (ctx: CustomContext) => {
     if (!ctx.user || !ctx.message) return;
-    if (ctx.user.state !== UserState.WAIT_REQUEST_CONTENT) {
-      if (ctx.user.state === UserState.READY_FOR_REQUEST_TYPE) {
-        await this.askRequestType(ctx, ctx.user.lang ?? Language.RU);
-      }
-      return;
-    }
+    if (ctx.user.state !== UserState.WAIT_REQUEST_CONTENT || ctx.user.pendingRequestType !== this.requestType) return;
 
     const lang = ctx.user.lang ?? Language.RU;
-    const pendingType = ctx.user.pendingRequestType;
-    if (!pendingType) {
-      await this.askRequestType(ctx, lang);
-      return;
-    }
-
     const text = "text" in ctx.message ? ctx.message.text : "caption" in ctx.message ? ctx.message.caption : undefined;
     const attachments = this.extractAttachments(ctx);
     const mediaGroupId = "media_group_id" in ctx.message ? ctx.message.media_group_id : undefined;
@@ -71,28 +50,26 @@ class RequestHandler {
         ctx,
         mediaGroupId,
         lang,
-        pendingType,
         text: text?.trim() ?? null,
         attachments,
       });
       return;
     }
 
-    await this.submitRequest({
+    await this.submit({
       ctx,
       userId: ctx.user.id,
-      chatId: ctx.user.chatId,
+      telegramId: ctx.user.telegramId,
       lang,
-      type: pendingType,
       text: text?.trim() ?? null,
       attachments,
     });
   };
 
-  private extractAttachments(ctx: CustomContext): CreateRequestAttachmentDTO[] {
+  private extractAttachments(ctx: CustomContext): CreateAppealAttachmentDTO[] {
     if (!ctx.message) return [];
 
-    const attachments: CreateRequestAttachmentDTO[] = [];
+    const attachments: CreateAppealAttachmentDTO[] = [];
 
     if ("photo" in ctx.message && ctx.message.photo?.length) {
       const photo = ctx.message.photo[ctx.message.photo.length - 1];
@@ -123,20 +100,17 @@ class RequestHandler {
     ctx: CustomContext;
     mediaGroupId: string;
     lang: Language;
-    pendingType: RequestType;
     text: string | null;
-    attachments: CreateRequestAttachmentDTO[];
+    attachments: CreateAppealAttachmentDTO[];
   }) {
-    const { ctx, mediaGroupId, lang, pendingType, text, attachments } = params;
-    const key = `${ctx.user!.chatId}:${mediaGroupId}`;
+    const { ctx, mediaGroupId, lang, text, attachments } = params;
+    const key = `${ctx.user!.telegramId}:${mediaGroupId}:appeal`;
     const existing = this.mediaGroups.get(key);
 
     if (existing) {
       clearTimeout(existing.timeout);
       existing.attachments.push(...attachments);
-      if (!existing.text && text) {
-        existing.text = text;
-      }
+      if (!existing.text && text) existing.text = text;
       existing.timeout = setTimeout(async () => {
         await this.flushMediaGroup(key, ctx);
       }, 800);
@@ -148,10 +122,9 @@ class RequestHandler {
     }, 800);
 
     this.mediaGroups.set(key, {
-      chatId: ctx.user!.chatId,
+      telegramId: ctx.user!.telegramId,
       userId: ctx.user!.id,
       lang,
-      type: pendingType,
       text,
       attachments: [...attachments],
       timeout,
@@ -163,55 +136,36 @@ class RequestHandler {
     if (!buffered) return;
 
     this.mediaGroups.delete(key);
-    await this.submitRequest({
+    await this.submit({
       ctx,
       userId: buffered.userId,
-      chatId: buffered.chatId,
+      telegramId: buffered.telegramId,
       lang: buffered.lang,
-      type: buffered.type,
       text: buffered.text,
       attachments: buffered.attachments,
     });
   }
 
-  private async submitRequest(params: {
+  private async submit(params: {
     ctx: CustomContext;
-    userId: number;
-    chatId: number;
+    userId: string;
+    telegramId: number;
     lang: Language;
-    type: RequestType;
     text: string | null;
-    attachments: CreateRequestAttachmentDTO[];
+    attachments: CreateAppealAttachmentDTO[];
   }) {
-    const { ctx, userId, chatId, lang, type, text, attachments } = params;
-
-    const isDuplicate = this.service.isDuplicateSubmission({
-      userId,
-      type,
-      text,
-      attachments,
-    });
-    if (isDuplicate) {
-      await ctx.reply(t(lang, "duplicateRequest"));
-      return;
-    }
-
-    const request = await this.service.createRequest({
-      userId,
-      type,
-      text,
-      attachments,
-    });
-
-    await this.service.clearPending(chatId);
+    const { ctx, userId, telegramId, lang, text, attachments } = params;
+    const created = await this.service.create({ userId, text, attachments });
+    await this.service.clearPending(telegramId);
 
     await ctx.reply(
       t(lang, "requestCreated", {
-        requestNumber: request.requestNumber,
-        status: statusLabel(lang, request.status),
+        requestNumber: created.requestNumber,
+        status: statusLabel(lang, created.status),
       }),
+      { reply_markup: buildRequestTypeKeyboard(lang) },
     );
   }
 }
 
-export const requestHandler = new RequestHandler(requestService);
+export const appealHandler = new AppealHandler(appealService);

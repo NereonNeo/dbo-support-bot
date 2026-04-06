@@ -10,9 +10,13 @@ export type LocaleKey =
   | "requestTypeImprovement"
   | "askRequestContent"
   | "emptyRequest"
-  | "duplicateRequest"
   | "somethingWentWrong"
-  | "requestCreated";
+  | "requestCreated"
+  | "requestList"
+  | "requestListTitle"
+  | "requestListEmpty"
+  | "requestListItem"
+  | "requestListNoText";
 
 type LocaleDict = Record<LocaleKey, string>;
 
@@ -27,9 +31,13 @@ const messages: Record<Language, LocaleDict> = {
     requestTypeImprovement: "Предложение",
     askRequestContent: "Отправьте текст заявки, фото, видео или оба варианта вместе.",
     emptyRequest: "Заявка не может быть пустой. Отправьте текст, фото, видео или оба варианта.",
-    duplicateRequest: "Похоже, такая заявка уже была отправлена. Если нужно, отправьте новую с изменениями.",
     somethingWentWrong: "Произошла ошибка при отправке заявки. Пожалуйста, попробуйте позже.",
     requestCreated: "Ваша заявка принята.\nНомер заявки: {requestNumber}\nСтатус: {status}\nСкоро с вами свяжутся.",
+    requestList: "Список заявок",
+    requestListTitle: "Ваши заявки:",
+    requestListEmpty: "У вас пока нет заявок.",
+    requestListItem: "Тема: {title}\nНомер: {requestNumber}\nСтатус: {status}",
+    requestListNoText: "Без текста",
   },
   [Language.UZ]: {
     welcome: "Assalomu alaykum! Bu yerda murojaat yoki taklif yuborishingiz mumkin. Davom etish uchun tilni tanlang.",
@@ -41,9 +49,13 @@ const messages: Record<Language, LocaleDict> = {
     requestTypeImprovement: "Taklif",
     askRequestContent: "Ariza matnini, foto, video yoki ikkalasini birga yuboring.",
     emptyRequest: "Ariza bo‘sh bo‘lishi mumkin emas. Matn, foto, video yoki ikkalasini yuboring.",
-    duplicateRequest: "Bu ariza allaqachon yuborilganga o‘xshaydi. Kerak bo‘lsa, o‘zgartirib qayta yuboring.",
     somethingWentWrong: "Arizani yuborishda xatolik yuz berdi. Iltimos, keyinroq urinib ko‘ring.",
     requestCreated: "Arizangiz qabul qilindi.\nAriza raqami: {requestNumber}\nStatus: {status}\nTez orada siz bilan bog‘lanishadi.",
+    requestList: "Arizalar listi",
+    requestListTitle: "Sizning arizalaringiz:",
+    requestListEmpty: "Hozircha arizalar yo‘q.",
+    requestListItem: "Mavzu: {title}\nRaqam: {requestNumber}\nStatus: {status}",
+    requestListNoText: "Matnsiz",
   },
   [Language.EN]: {
     welcome: "Hello! Here you can submit an appeal or an improvement suggestion. Please choose a language to continue.",
@@ -55,9 +67,13 @@ const messages: Record<Language, LocaleDict> = {
     requestTypeImprovement: "Improvement",
     askRequestContent: "Send request text, photo, video, or both.",
     emptyRequest: "The request cannot be empty. Send text, photo, video, or both.",
-    duplicateRequest: "This request looks already submitted. If needed, send a new one with changes.",
     somethingWentWrong: "An error occurred while sending the request. Please try again later.",
     requestCreated: "Your request has been accepted.\nRequest number: {requestNumber}\nStatus: {status}\nWe will contact you soon.",
+    requestList: "Request List",
+    requestListTitle: "Your requests:",
+    requestListEmpty: "You do not have any requests yet.",
+    requestListItem: "Subject: {title}\nNumber: {requestNumber}\nStatus: {status}",
+    requestListNoText: "No text",
   },
 };
 

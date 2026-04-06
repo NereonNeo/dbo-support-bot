@@ -1,6 +1,6 @@
+import { UserState } from "@/generated/prisma/client";
 import { authService } from "@/src/handlers/auth/auth.service";
 import { CustomContext } from "@/src/shared/api/api-instance";
-import { UserState } from "@/generated/prisma/client";
 import { MiddlewareFn } from "grammy";
 
 class BotMiddleware {
@@ -16,7 +16,7 @@ class BotMiddleware {
     if (!user)
       ctx.user = await this.service.create({
         name: ctx.from?.username,
-        chatId: telegramId,
+        telegramId: telegramId,
         state: UserState.WAIT_LANGUAGE,
       });
     if (user) ctx.user = user;
