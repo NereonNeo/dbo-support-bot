@@ -7,3 +7,7 @@ export type ChangeLanguageDTO = {
 export type ChangeInnDTO = {
   inn: string;
 };
+
+export type ChangePhoneDTO = {
+  phone: string;
+};

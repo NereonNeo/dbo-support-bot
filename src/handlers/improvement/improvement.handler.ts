@@ -6,8 +6,8 @@ import { improvementService } from "./improvement.service";
 import { CreateImprovementAttachmentDTO } from "./improvement.types";
 
 type BufferedImprovement = {
-  chatId: number;
-  userId: number;
+  telegramId: number;
+  userId: string;
   lang: Language;
   text: string | null;
   attachments: CreateImprovementAttachmentDTO[];
@@ -27,7 +27,7 @@ class ImprovementHandler {
       return;
     }
 
-    await this.service.start(ctx.user.chatId);
+    await this.service.start(ctx.user.telegramId);
     await ctx.reply(t(lang, "askRequestContent"), { reply_markup: { remove_keyboard: true } });
   };
 
@@ -59,7 +59,7 @@ class ImprovementHandler {
     await this.submit({
       ctx,
       userId: ctx.user.id,
-      chatId: ctx.user.chatId,
+      telegramId: ctx.user.telegramId,
       lang,
       text: text?.trim() ?? null,
       attachments,
@@ -104,7 +104,7 @@ class ImprovementHandler {
     attachments: CreateImprovementAttachmentDTO[];
   }) {
     const { ctx, mediaGroupId, lang, text, attachments } = params;
-    const key = `${ctx.user!.chatId}:${mediaGroupId}:improvement`;
+    const key = `${ctx.user!.telegramId}:${mediaGroupId}:improvement`;
     const existing = this.mediaGroups.get(key);
 
     if (existing) {
@@ -122,7 +122,7 @@ class ImprovementHandler {
     }, 800);
 
     this.mediaGroups.set(key, {
-      chatId: ctx.user!.chatId,
+      telegramId: ctx.user!.telegramId,
       userId: ctx.user!.id,
       lang,
       text,
@@ -139,7 +139,7 @@ class ImprovementHandler {
     await this.submit({
       ctx,
       userId: buffered.userId,
-      chatId: buffered.chatId,
+      telegramId: buffered.telegramId,
       lang: buffered.lang,
       text: buffered.text,
       attachments: buffered.attachments,
@@ -148,15 +148,15 @@ class ImprovementHandler {
 
   private async submit(params: {
     ctx: CustomContext;
-    userId: number;
-    chatId: number;
+    userId: string;
+    telegramId: number;
     lang: Language;
     text: string | null;
     attachments: CreateImprovementAttachmentDTO[];
   }) {
-    const { ctx, userId, chatId, lang, text, attachments } = params;
+    const { ctx, userId, telegramId, lang, text, attachments } = params;
     const created = await this.service.create({ userId, text, attachments });
-    await this.service.clearPending(chatId);
+    await this.service.clearPending(telegramId);
 
     await ctx.reply(
       t(lang, "requestCreated", {

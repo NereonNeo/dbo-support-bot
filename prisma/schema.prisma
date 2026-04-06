@@ -17,6 +17,7 @@ model User {
   telegramId         Int          @unique
   lang               Language?
   name               String?
+  phone              String?
   inn                String?
   state              UserState    @default(WAIT_LANGUAGE)
   pendingRequestType RequestType?
@@ -60,6 +61,7 @@ enum Language {
 
 enum UserState {
   WAIT_LANGUAGE
+  WAIT_CONTACT
   WAIT_INN
   READY_FOR_REQUEST_TYPE
   WAIT_REQUEST_CONTENT

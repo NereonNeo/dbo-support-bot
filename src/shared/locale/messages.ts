@@ -3,6 +3,9 @@ import { Language, RequestStatus } from "@/generated/prisma/client";
 export type LocaleKey =
   | "welcome"
   | "chooseLanguage"
+  | "askContact"
+  | "shareContactButton"
+  | "contactInvalid"
   | "askInn"
   | "innInvalid"
   | "chooseRequestType"
@@ -24,6 +27,9 @@ const messages: Record<Language, LocaleDict> = {
   [Language.RU]: {
     welcome: "Здравствуйте! Добро пожаловать. Здесь вы можете отправить обращение или предложение по улучшению. Для продолжения выберите язык.",
     chooseLanguage: "Пожалуйста, выберите язык.",
+    askContact: "Пожалуйста, отправьте ваш номер телефона кнопкой ниже.",
+    shareContactButton: "Отправить контакт",
+    contactInvalid: "Не удалось получить корректный номер телефона. Пожалуйста, отправьте контакт кнопкой ниже.",
     askInn: "Пожалуйста, отправьте ваш ИНН.",
     innInvalid: "ИНН введен некорректно. Пожалуйста, отправьте корректный ИНН.",
     chooseRequestType: "Выберите тип заявки:",
@@ -42,6 +48,9 @@ const messages: Record<Language, LocaleDict> = {
   [Language.UZ]: {
     welcome: "Assalomu alaykum! Bu yerda murojaat yoki taklif yuborishingiz mumkin. Davom etish uchun tilni tanlang.",
     chooseLanguage: "Iltimos, tilni tanlang.",
+    askContact: "Iltimos, quyidagi tugma orqali telefon raqamingizni yuboring.",
+    shareContactButton: "Kontaktni yuborish",
+    contactInvalid: "Telefon raqami noto‘g‘ri. Iltimos, kontaktni quyidagi tugma orqali yuboring.",
     askInn: "Iltimos, INN raqamingizni yuboring.",
     innInvalid: "INN noto‘g‘ri kiritildi. Iltimos, INNni qayta yuboring.",
     chooseRequestType: "Ariza turini tanlang:",
@@ -60,6 +69,9 @@ const messages: Record<Language, LocaleDict> = {
   [Language.EN]: {
     welcome: "Hello! Here you can submit an appeal or an improvement suggestion. Please choose a language to continue.",
     chooseLanguage: "Please choose a language.",
+    askContact: "Please share your phone number using the button below.",
+    shareContactButton: "Share contact",
+    contactInvalid: "Unable to get a valid phone number. Please send your contact using the button below.",
     askInn: "Please send your INN.",
     innInvalid: "The INN is invalid. Please send a correct INN.",
     chooseRequestType: "Choose request type:",

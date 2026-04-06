@@ -9,7 +9,7 @@ export type CreateImprovementAttachmentDTO = {
 };
 
 export type CreateImprovementDTO = {
-  userId: number;
+  userId: string;
   text?: string | null;
   attachments: CreateImprovementAttachmentDTO[];
 };

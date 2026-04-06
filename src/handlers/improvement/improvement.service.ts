@@ -8,16 +8,16 @@ class ImprovementService {
 
   private readonly requestType = RequestType.IMPROVEMENT;
 
-  async start(chatId: number) {
+  async start(telegramId: number) {
     await this.prisma.user.update({
-      where: { chatId },
+      where: { telegramId: telegramId },
       data: { pendingRequestType: this.requestType, state: UserState.WAIT_REQUEST_CONTENT },
     });
   }
 
-  async clearPending(chatId: number) {
+  async clearPending(telegramId: number) {
     await this.prisma.user.update({
-      where: { chatId },
+      where: { telegramId: telegramId },
       data: { pendingRequestType: null, state: UserState.READY_FOR_REQUEST_TYPE },
     });
   }

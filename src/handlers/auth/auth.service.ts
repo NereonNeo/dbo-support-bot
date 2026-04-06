@@ -1,6 +1,6 @@
 import { Prisma, UserState } from "@/generated/prisma/client";
 import { prismaService } from "@/src/shared/db/db-instance";
-import { ChangeInnDTO, ChangeLanguageDTO } from "./auth.types";
+import { ChangeInnDTO, ChangeLanguageDTO, ChangePhoneDTO } from "./auth.types";
 
 class AuthService {
   constructor(private readonly prisma: typeof prismaService) {}
@@ -18,7 +18,15 @@ class AuthService {
   async changeLanguage(telegramId: number, data: ChangeLanguageDTO) {
     const response = await this.prisma.user.update({
       where: { telegramId: telegramId },
-      data: { lang: data.lang, state: UserState.WAIT_INN },
+      data: { lang: data.lang, state: UserState.WAIT_CONTACT },
+    });
+    return response;
+  }
+
+  async changePhone(telegramId: number, data: ChangePhoneDTO) {
+    const response = await this.prisma.user.update({
+      where: { telegramId: telegramId },
+      data: { phone: data.phone, state: UserState.WAIT_INN },
     });
     return response;
   }

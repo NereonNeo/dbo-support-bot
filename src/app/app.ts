@@ -29,6 +29,11 @@ bot.callbackQuery(/^lang:(ru|en|uz)$/, authHandler.chooseLanguage);
 bot.on("message", async (ctx) => {
   if (!ctx.user) return;
 
+  if (ctx.user.state === UserState.WAIT_CONTACT) {
+    await authHandler.handleContactInput(ctx);
+    return;
+  }
+
   if (ctx.user.state === UserState.WAIT_INN && "text" in ctx.message) {
     await authHandler.handleInnInput(ctx);
     return;
