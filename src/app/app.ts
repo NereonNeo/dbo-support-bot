@@ -8,8 +8,8 @@ import { botMiddleware } from "./middleware/bot-middleware";
 
 import { requestHandler } from "@/src/handlers/request/request.entry";
 import { botInstance } from "../shared/api/api-instance";
-const bot = botInstance.getSnapshot();
 
+const bot = botInstance.getSnapshot();
 bot.catch(async (error) => {
   console.error("Bot error", error.error);
 

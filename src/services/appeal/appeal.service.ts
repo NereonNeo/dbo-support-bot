@@ -1,12 +1,12 @@
 import { RequestStatus, RequestType, UserState } from "@/generated/prisma/client";
 import { prismaService } from "@/src/shared/db/db-instance";
 import { formatRequestNumber } from "@/src/shared/utils/request-number";
-import { CreateImprovementDTO } from "./improvement.types";
+import { CreateAppealDTO } from "./appeal.service.types";
 
-class ImprovementService {
+class AppealService {
   constructor(private readonly prisma: typeof prismaService) {}
 
-  private readonly requestType = RequestType.IMPROVEMENT;
+  private readonly requestType = RequestType.APPEAL;
 
   async start(telegramId: number) {
     await this.prisma.user.update({
@@ -22,7 +22,7 @@ class ImprovementService {
     });
   }
 
-  async create(data: CreateImprovementDTO) {
+  async create(data: CreateAppealDTO) {
     return this.prisma.$transaction(async (tx) => {
       const created = await tx.request.create({
         data: {
@@ -58,4 +58,4 @@ class ImprovementService {
   }
 }
 
-export const improvementService = new ImprovementService(prismaService);
+export const appealService = new AppealService(prismaService);

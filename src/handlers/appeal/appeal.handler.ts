@@ -1,9 +1,9 @@
 import { AttachmentType, Language, RequestType, UserState } from "@/generated/prisma/client";
+import { appealService } from "@/src/services/appeal/appeal.service";
+import { CreateAppealAttachmentDTO } from "@/src/services/appeal/appeal.service.types";
 import { CustomContext } from "@/src/shared/api/api-instance";
 import { statusLabel, t } from "@/src/shared/locale/messages";
 import { buildRequestTypeKeyboard } from "@/src/shared/ui/request-type-keyboard";
-import { appealService } from "./appeal.service";
-import { CreateAppealAttachmentDTO } from "./appeal.types";
 
 type BufferedAppeal = {
   telegramId: number;

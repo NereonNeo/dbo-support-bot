@@ -1,6 +1,6 @@
 import { Prisma, UserState } from "@/generated/prisma/client";
 import { prismaService } from "@/src/shared/db/db-instance";
-import { ChangeInnDTO, ChangeLanguageDTO, ChangePhoneDTO } from "./auth.types";
+import { ChangeInnDTO, ChangeLanguageDTO, ChangePhoneDTO } from "./auth.service.types";
 
 class AuthService {
   constructor(private readonly prisma: typeof prismaService) {}

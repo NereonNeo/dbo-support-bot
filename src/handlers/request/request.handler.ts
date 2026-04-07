@@ -1,7 +1,7 @@
 import { requestMapper } from "@/src/handlers/request/request.mapper";
+import { requestService } from "@/src/services/request/request.service";
 import { CustomContext } from "@/src/shared/api/api-instance";
 import { resolveLanguage, t } from "@/src/shared/locale/messages";
-import { requestService } from "./request.service";
 
 class RequestHandler {
   constructor(private readonly service: typeof requestService) {}

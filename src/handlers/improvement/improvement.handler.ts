@@ -1,9 +1,9 @@
 import { AttachmentType, Language, RequestType, UserState } from "@/generated/prisma/client";
+import { improvementService } from "@/src/services/improvement/improvement.service";
+import { CreateImprovementAttachmentDTO } from "@/src/services/improvement/improvement.service.types";
 import { CustomContext } from "@/src/shared/api/api-instance";
 import { statusLabel, t } from "@/src/shared/locale/messages";
 import { buildRequestTypeKeyboard } from "@/src/shared/ui/request-type-keyboard";
-import { improvementService } from "./improvement.service";
-import { CreateImprovementAttachmentDTO } from "./improvement.types";
 
 type BufferedImprovement = {
   telegramId: number;

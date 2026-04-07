@@ -1,5 +1,5 @@
 import { UserState } from "@/generated/prisma/client";
-import { authService } from "@/src/handlers/auth/auth.service";
+import { authService } from "@/src/services/auth/auth.service";
 import { CustomContext } from "@/src/shared/api/api-instance";
 import { MiddlewareFn } from "grammy";
 

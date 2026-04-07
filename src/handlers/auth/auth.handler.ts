@@ -1,10 +1,10 @@
 import { Language, UserState } from "@/generated/prisma/client";
+import { authService } from "@/src/services/auth/auth.service";
 import { CustomContext } from "@/src/shared/api/api-instance";
 import { t } from "@/src/shared/locale/messages";
 import { buildRequestTypeKeyboard } from "@/src/shared/ui/request-type-keyboard";
 import { CallbackQueryContext, CommandContext } from "grammy";
 import { buildContactKeyboard, LanguageKeyboard } from "./auth.const";
-import { authService } from "./auth.service";
 
 class AuthHandler {
   constructor(private readonly service: typeof authService) {}
