@@ -5,8 +5,10 @@
   "main": "index.js",
   "scripts": {
     "dev": "export DEBUG='grammy*' && tsx watch ./src/main.ts",
+    "start": "tsx ./src/main.ts",
     "format": "prettier --write \"src/**/*.ts\" ",
     "prisma:migrate": "prisma migrate dev --config ./src/app/db/prisma.config.ts",
+    "prisma:migrate:deploy": "prisma migrate deploy --config ./src/app/db/prisma.config.ts",
     "prisma:generate": "prisma generate --config ./src/app/db/prisma.config.ts",
     "prisma:validate": "prisma validate --config ./src/app/db/prisma.config.ts"
   },
