@@ -1,4 +1,5 @@
-import { authService } from "@/src/handlers/auth/auth.service";
+import { UserState } from "@/generated/prisma/client";
+import { authService } from "@/src/services/auth/auth.service";
 import { CustomContext } from "@/src/shared/api/api-instance";
 import { MiddlewareFn } from "grammy";
 
@@ -10,11 +11,14 @@ class BotMiddleware {
 
     const telegramId = ctx.from.id;
 
-    console.log(telegramId);
-
     const user = await this.service.getOneUnique(telegramId);
 
-    if (!user) ctx.user = await this.service.create({ name: ctx.from?.username, chatId: telegramId });
+    if (!user)
+      ctx.user = await this.service.create({
+        name: ctx.from?.username,
+        telegramId: telegramId,
+        state: UserState.WAIT_LANGUAGE,
+      });
     if (user) ctx.user = user;
 
     await next();

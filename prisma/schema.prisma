@@ -13,8 +13,75 @@ datasource db {
 }
 
 model User {
-  id     Int     @id @default(autoincrement())
-  chatId Int     @unique
-  lang   String?
-  name   String?
+  id                 String       @id @unique @default(uuid())
+  telegramId         Int          @unique
+  lang               Language?
+  name               String?
+  phone              String?
+  inn                String?
+  state              UserState    @default(WAIT_LANGUAGE)
+  pendingRequestType RequestType?
+  createdAt          DateTime     @default(now())
+  updatedAt          DateTime     @updatedAt
+  requests           Request[]
+}
+
+model Request {
+  id            String        @id @unique @default(uuid())
+  requestNumber String        @unique
+  userId        String
+  type          RequestType
+  text          String?
+  status        RequestStatus @default(NEW)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  user        User                @relation(fields: [userId], references: [id])
+  attachments RequestAttachment[]
+}
+
+model RequestAttachment {
+  id             String         @id @default(uuid())
+  requestId      String
+  telegramFileId String
+  type           AttachmentType
+  fileName       String?
+  mimeType       String?
+  fileSize       Int?
+  createdAt      DateTime       @default(now())
+
+  request Request @relation(fields: [requestId], references: [id])
+}
+
+enum Language {
+  RU
+  UZ
+  EN
+}
+
+enum UserState {
+  WAIT_LANGUAGE
+  WAIT_CONTACT
+  WAIT_INN
+  READY_FOR_REQUEST_TYPE
+  WAIT_REQUEST_CONTENT
+  REQUEST_CREATED
+}
+
+enum RequestType {
+  APPEAL
+  IMPROVEMENT
+}
+
+enum RequestStatus {
+  NEW
+  IN_PROGRESS
+  RESOLVED
+  REJECTED
+  CLOSED
+}
+
+enum AttachmentType {
+  PHOTO
+  VIDEO
 }
