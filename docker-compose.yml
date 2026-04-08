@@ -3,8 +3,6 @@ services:
     image: postgres:17-alpine
     container_name: dbo-support-postgres
     restart: unless-stopped
-    networks:
-      - proxy
     environment:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
@@ -13,17 +11,8 @@ services:
       - "${POSTGRES_PORT}:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    labels:
-      - traefik.enable=true
-      - traefik.http.routers.api.rule=Host(`db.yakubs.online`)
-      - traefik.http.routers.api.entrypoints=websecure
-      - traefik.http.routers.api.tls=true
-      - traefik.http.routers.api.tls.certresolver=le
-      - traefik.http.services.api.loadbalancer.server.port=${POSTGRES_PORT}
-      - traefik.http.routers.api-http.rule=Host(`db.yakubs.online`)
-      - traefik.http.routers.api-http.entrypoints=web
-      - traefik.http.routers.api-http.middlewares=redirect-to-https
-      - traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https
+    networks:
+      - default
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
       interval: 5s
@@ -36,31 +25,17 @@ services:
     container_name: dbo-support-bot
     restart: unless-stopped
     networks:
-      - proxy
+      - default
     env_file:
       - .env
     environment:
       BOT_ID: ${BOT_ID}
-      HTTP_PORT: ${HTTP_PORT}
+      HTTP_PORT: 3000
       DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}?schema=public
     ports:
-      - "${HTTP_PORT}:3000"
-    labels:
-      - traefik.enable=true
-      - traefik.http.routers.api.rule=Host(`api.yakubs.online`)
-      - traefik.http.routers.api.entrypoints=websecure
-      - traefik.http.routers.api.tls=true
-      - traefik.http.routers.api.tls.certresolver=le
-      - traefik.http.services.api.loadbalancer.server.port=${HTTP_PORT}
-      - traefik.http.routers.api-http.rule=Host(`api.yakubs.online`)
-      - traefik.http.routers.api-http.entrypoints=web
-      - traefik.http.routers.api-http.middlewares=redirect-to-https
-      - traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https
+      - "${HTTP_PORT:-3000}:3000"
     depends_on:
       postgres:
         condition: service_healthy
-networks:
-  proxy:
-    external: true
 volumes:
   postgres_data:
