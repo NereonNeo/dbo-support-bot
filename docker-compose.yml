@@ -31,10 +31,9 @@ services:
       - .env
     environment:
       BOT_ID: ${BOT_ID}
-      HTTP_PORT: ${HTTP_PORT}
+      HTTP_PORT: 3000
+      BOT_POLLING: ${BOT_POLLING:-false}
       DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}?schema=public
-    ports:
-      - "${HTTP_PORT}:3000"
     labels:
       - traefik.enable=true
       - traefik.docker.network=proxy
@@ -43,7 +42,7 @@ services:
       - traefik.http.routers.dbo-support-api.tls=true
       - traefik.http.routers.dbo-support-api.tls.certresolver=le
       - traefik.http.routers.dbo-support-api.service=dbo-support-api
-      - traefik.http.services.dbo-support-api.loadbalancer.server.port=${HTTP_PORT}
+      - traefik.http.services.dbo-support-api.loadbalancer.server.port=3000
 
       - traefik.http.routers.dbo-support-api-http.rule=Host(`api.yakubs.online`)
       - traefik.http.routers.dbo-support-api-http.entrypoints=web
