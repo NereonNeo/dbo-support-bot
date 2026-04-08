@@ -31,12 +31,13 @@ services:
       - .env
     environment:
       BOT_ID: ${BOT_ID}
-      HTTP_PORT: ${HTTP_PORT}
+      HTTP_PORT: 3000
       DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}?schema=public
     ports:
-      - "${HTTP_PORT}:3000"
+      - "${HTTP_PORT:-3001}:3000"
     labels:
       - traefik.enable=true
+      - traefik.docker.network=proxy
       - traefik.http.routers.api.rule=Host(`api.yakubs.online`)
       - traefik.http.routers.api.entrypoints=websecure
       - traefik.http.routers.api.tls=true
