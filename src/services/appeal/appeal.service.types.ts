@@ -10,6 +10,8 @@ export type CreateAppealAttachmentDTO = {
 
 export type CreateAppealDTO = {
   userId: string;
+  domain: string;
+  subdomain?: string | null;
   text?: string | null;
   attachments: CreateAppealAttachmentDTO[];
 };

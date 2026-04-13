@@ -11,6 +11,10 @@ export type LocaleKey =
   | "chooseRequestType"
   | "requestTypeAppeal"
   | "requestTypeImprovement"
+  | "askAppealDomain"
+  | "appealDomainInvalid"
+  | "askAppealSubdomain"
+  | "appealSubdomainInvalid"
   | "askRequestContent"
   | "emptyRequest"
   | "somethingWentWrong"
@@ -35,6 +39,10 @@ const messages: Record<Language, LocaleDict> = {
     chooseRequestType: "Выберите тип заявки:",
     requestTypeAppeal: "Обращение",
     requestTypeImprovement: "Предложение",
+    askAppealDomain: "Выберите домен проблемы:",
+    appealDomainInvalid: "Выберите домен проблемы кнопкой ниже.",
+    askAppealSubdomain: "Выберите суть проблемы:",
+    appealSubdomainInvalid: "Выберите суть проблемы кнопкой ниже.",
     askRequestContent: "Отправьте текст заявки, фото, видео или оба варианта вместе.",
     emptyRequest: "Заявка не может быть пустой. Отправьте текст, фото, видео или оба варианта.",
     somethingWentWrong: "Произошла ошибка при отправке заявки. Пожалуйста, попробуйте позже.",
@@ -56,6 +64,10 @@ const messages: Record<Language, LocaleDict> = {
     chooseRequestType: "Ariza turini tanlang:",
     requestTypeAppeal: "Murojaat",
     requestTypeImprovement: "Taklif",
+    askAppealDomain: "Muammo domenini tanlang:",
+    appealDomainInvalid: "Quyidagi tugma orqali muammo domenini tanlang.",
+    askAppealSubdomain: "Muammo turini tanlang:",
+    appealSubdomainInvalid: "Quyidagi tugma orqali muammo turini tanlang.",
     askRequestContent: "Ariza matnini, foto, video yoki ikkalasini birga yuboring.",
     emptyRequest: "Ariza bo‘sh bo‘lishi mumkin emas. Matn, foto, video yoki ikkalasini yuboring.",
     somethingWentWrong: "Arizani yuborishda xatolik yuz berdi. Iltimos, keyinroq urinib ko‘ring.",
@@ -77,6 +89,10 @@ const messages: Record<Language, LocaleDict> = {
     chooseRequestType: "Choose request type:",
     requestTypeAppeal: "Appeal",
     requestTypeImprovement: "Improvement",
+    askAppealDomain: "Choose the problem domain:",
+    appealDomainInvalid: "Choose the problem domain using the buttons below.",
+    askAppealSubdomain: "Choose the problem category:",
+    appealSubdomainInvalid: "Choose the problem category using the buttons below.",
     askRequestContent: "Send request text, photo, video, or both.",
     emptyRequest: "The request cannot be empty. Send text, photo, video, or both.",
     somethingWentWrong: "An error occurred while sending the request. Please try again later.",

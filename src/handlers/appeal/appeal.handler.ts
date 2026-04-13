@@ -2,12 +2,21 @@ import { AttachmentType, Language, RequestType, UserState } from "@/generated/pr
 import { appealService } from "@/src/services/appeal/appeal.service";
 import { CreateAppealAttachmentDTO } from "@/src/services/appeal/appeal.service.types";
 import { CustomContext } from "@/src/shared/api/api-instance";
+import {
+  APPEAL_DOMAINS,
+  findAppealDomainById,
+  findAppealDomainByLabel,
+  findAppealSubdomainByLabel,
+} from "@/src/shared/config/appeal-domains";
 import { statusLabel, t } from "@/src/shared/locale/messages";
+import { buildAppealDomainKeyboard, buildAppealSubdomainKeyboard } from "@/src/shared/ui/appeal-keyboards";
 import { buildRequestTypeKeyboard } from "@/src/shared/ui/request-type-keyboard";
 
 type BufferedAppeal = {
   telegramId: number;
   userId: string;
+  domain: string | null;
+  subdomain: string | null;
   lang: Language;
   text: string | null;
   attachments: CreateAppealAttachmentDTO[];
@@ -28,6 +37,90 @@ class AppealHandler {
     }
 
     await this.service.start(ctx.user.telegramId);
+    await this.promptDomainSelection(ctx);
+  };
+
+  promptDomainSelection = async (ctx: CustomContext) => {
+    if (!ctx.user) return;
+    const lang = ctx.user.lang ?? Language.RU;
+    await ctx.reply(t(lang, "askAppealDomain"), {
+      reply_markup: buildAppealDomainKeyboard(lang, APPEAL_DOMAINS),
+    });
+  };
+
+  promptSubdomainSelection = async (ctx: CustomContext) => {
+    if (!ctx.user) return;
+    const lang = ctx.user.lang ?? Language.RU;
+    const domain = findAppealDomainById(ctx.user.pendingAppealDomain);
+
+    if (!domain) {
+      await this.promptDomainSelection(ctx);
+      return;
+    }
+
+    await ctx.reply(t(lang, "askAppealSubdomain"), {
+      reply_markup: buildAppealSubdomainKeyboard(lang, domain),
+    });
+  };
+
+  handleDomainSelection = async (ctx: CustomContext) => {
+    if (!ctx.user || !ctx.message) return;
+    if (ctx.user.state !== UserState.WAIT_APPEAL_DOMAIN || ctx.user.pendingRequestType !== this.requestType) return;
+
+    const lang = ctx.user.lang ?? Language.RU;
+    const input = "text" in ctx.message ? ctx.message.text ?? "" : "";
+    const domain = findAppealDomainByLabel(lang, input);
+
+    if (!domain) {
+      await ctx.reply(t(lang, "appealDomainInvalid"), {
+        reply_markup: buildAppealDomainKeyboard(lang, APPEAL_DOMAINS),
+      });
+      return;
+    }
+
+    const shouldAskSubdomain = domain.subdomains.length > 0;
+    await this.service.chooseDomain({
+      telegramId: ctx.user.telegramId,
+      domain: domain.id,
+      shouldAskSubdomain,
+    });
+
+    if (shouldAskSubdomain) {
+      await ctx.reply(t(lang, "askAppealSubdomain"), {
+        reply_markup: buildAppealSubdomainKeyboard(lang, domain),
+      });
+      return;
+    }
+
+    await ctx.reply(t(lang, "askRequestContent"), { reply_markup: { remove_keyboard: true } });
+  };
+
+  handleSubdomainSelection = async (ctx: CustomContext) => {
+    if (!ctx.user || !ctx.message) return;
+    if (ctx.user.state !== UserState.WAIT_APPEAL_SUBDOMAIN || ctx.user.pendingRequestType !== this.requestType) return;
+
+    const lang = ctx.user.lang ?? Language.RU;
+    const domain = findAppealDomainById(ctx.user.pendingAppealDomain);
+
+    if (!domain) {
+      await this.service.start(ctx.user.telegramId);
+      await this.promptDomainSelection(ctx);
+      return;
+    }
+
+    const input = "text" in ctx.message ? ctx.message.text ?? "" : "";
+    const subdomain = findAppealSubdomainByLabel(domain, lang, input);
+    if (!subdomain) {
+      await ctx.reply(t(lang, "appealSubdomainInvalid"), {
+        reply_markup: buildAppealSubdomainKeyboard(lang, domain),
+      });
+      return;
+    }
+
+    await this.service.chooseSubdomain({
+      telegramId: ctx.user.telegramId,
+      subdomain: subdomain.id,
+    });
     await ctx.reply(t(lang, "askRequestContent"), { reply_markup: { remove_keyboard: true } });
   };
 
@@ -50,6 +143,8 @@ class AppealHandler {
         ctx,
         mediaGroupId,
         lang,
+        domain: ctx.user.pendingAppealDomain ?? null,
+        subdomain: ctx.user.pendingAppealSubdomain ?? null,
         text: text?.trim() ?? null,
         attachments,
       });
@@ -60,6 +155,8 @@ class AppealHandler {
       ctx,
       userId: ctx.user.id,
       telegramId: ctx.user.telegramId,
+      domain: ctx.user.pendingAppealDomain,
+      subdomain: ctx.user.pendingAppealSubdomain,
       lang,
       text: text?.trim() ?? null,
       attachments,
@@ -100,10 +197,12 @@ class AppealHandler {
     ctx: CustomContext;
     mediaGroupId: string;
     lang: Language;
+    domain: string | null;
+    subdomain: string | null;
     text: string | null;
     attachments: CreateAppealAttachmentDTO[];
   }) {
-    const { ctx, mediaGroupId, lang, text, attachments } = params;
+    const { ctx, mediaGroupId, lang, domain, subdomain, text, attachments } = params;
     const key = `${ctx.user!.telegramId}:${mediaGroupId}:appeal`;
     const existing = this.mediaGroups.get(key);
 
@@ -121,13 +220,15 @@ class AppealHandler {
       await this.flushMediaGroup(key, ctx);
     }, 800);
 
-    this.mediaGroups.set(key, {
-      telegramId: ctx.user!.telegramId,
-      userId: ctx.user!.id,
-      lang,
-      text,
-      attachments: [...attachments],
-      timeout,
+      this.mediaGroups.set(key, {
+        telegramId: ctx.user!.telegramId,
+        userId: ctx.user!.id,
+        domain,
+        subdomain,
+        lang,
+        text,
+        attachments: [...attachments],
+        timeout,
     });
   }
 
@@ -140,6 +241,8 @@ class AppealHandler {
       ctx,
       userId: buffered.userId,
       telegramId: buffered.telegramId,
+      domain: buffered.domain,
+      subdomain: buffered.subdomain,
       lang: buffered.lang,
       text: buffered.text,
       attachments: buffered.attachments,
@@ -150,12 +253,20 @@ class AppealHandler {
     ctx: CustomContext;
     userId: string;
     telegramId: number;
+    domain: string | null | undefined;
+    subdomain: string | null | undefined;
     lang: Language;
     text: string | null;
     attachments: CreateAppealAttachmentDTO[];
   }) {
-    const { ctx, userId, telegramId, lang, text, attachments } = params;
-    const created = await this.service.create({ userId, text, attachments });
+    const { ctx, userId, telegramId, domain, subdomain, lang, text, attachments } = params;
+    if (!domain) {
+      await this.service.start(telegramId);
+      await this.promptDomainSelection(ctx);
+      return;
+    }
+
+    const created = await this.service.create({ userId, domain, subdomain, text, attachments });
     await this.service.clearPending(telegramId);
 
     await ctx.reply(

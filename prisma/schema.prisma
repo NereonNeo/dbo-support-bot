@@ -21,6 +21,8 @@ model User {
   inn                String?
   state              UserState    @default(WAIT_LANGUAGE)
   pendingRequestType RequestType?
+  pendingAppealDomain    String?
+  pendingAppealSubdomain String?
   createdAt          DateTime     @default(now())
   updatedAt          DateTime     @updatedAt
   requests           Request[]
@@ -31,6 +33,8 @@ model Request {
   requestNumber String        @unique
   userId        String
   type          RequestType
+  domain        String?
+  subdomain     String?
   text          String?
   status        RequestStatus @default(NEW)
   createdAt     DateTime      @default(now())
@@ -64,6 +68,8 @@ enum UserState {
   WAIT_CONTACT
   WAIT_INN
   READY_FOR_REQUEST_TYPE
+  WAIT_APPEAL_DOMAIN
+  WAIT_APPEAL_SUBDOMAIN
   WAIT_REQUEST_CONTENT
   REQUEST_CREATED
 }

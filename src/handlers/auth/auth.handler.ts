@@ -1,4 +1,5 @@
-import { Language, UserState } from "@/generated/prisma/client";
+import { Language, RequestType, UserState } from "@/generated/prisma/client";
+import { appealHandler } from "@/src/handlers/appeal/appeal.entry";
 import { authService } from "@/src/services/auth/auth.service";
 import { CustomContext } from "@/src/shared/api/api-instance";
 import { t } from "@/src/shared/locale/messages";
@@ -27,8 +28,23 @@ class AuthHandler {
       return;
     }
 
+    if (user.state === UserState.WAIT_APPEAL_DOMAIN) {
+      await appealHandler.promptDomainSelection(ctx);
+      return;
+    }
+
+    if (user.state === UserState.WAIT_APPEAL_SUBDOMAIN) {
+      await appealHandler.promptSubdomainSelection(ctx);
+      return;
+    }
+
     if (user.state === UserState.WAIT_REQUEST_CONTENT) {
-      await ctx.reply(t(user.lang, "askRequestContent"));
+      if (user.pendingRequestType === RequestType.APPEAL && !user.pendingAppealDomain) {
+        await appealHandler.promptDomainSelection(ctx);
+        return;
+      }
+
+      await ctx.reply(t(user.lang, "askRequestContent"), { reply_markup: { remove_keyboard: true } });
       return;
     }
 

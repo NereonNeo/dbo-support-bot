@@ -39,6 +39,16 @@ bot.on("message", async (ctx) => {
     return;
   }
 
+  if (ctx.user.state === UserState.WAIT_APPEAL_DOMAIN) {
+    await appealHandler.handleDomainSelection(ctx);
+    return;
+  }
+
+  if (ctx.user.state === UserState.WAIT_APPEAL_SUBDOMAIN) {
+    await appealHandler.handleSubdomainSelection(ctx);
+    return;
+  }
+
   if (ctx.user.state === UserState.READY_FOR_REQUEST_TYPE && "text" in ctx.message) {
     const lang = resolveLanguage(ctx.user.lang);
     const options = requestTypeOptions(lang);

@@ -11,14 +11,24 @@ class ImprovementService {
   async start(telegramId: number) {
     await this.prisma.user.update({
       where: { telegramId: telegramId },
-      data: { pendingRequestType: this.requestType, state: UserState.WAIT_REQUEST_CONTENT },
+      data: {
+        pendingRequestType: this.requestType,
+        pendingAppealDomain: null,
+        pendingAppealSubdomain: null,
+        state: UserState.WAIT_REQUEST_CONTENT,
+      },
     });
   }
 
   async clearPending(telegramId: number) {
     await this.prisma.user.update({
       where: { telegramId: telegramId },
-      data: { pendingRequestType: null, state: UserState.READY_FOR_REQUEST_TYPE },
+      data: {
+        pendingRequestType: null,
+        pendingAppealDomain: null,
+        pendingAppealSubdomain: null,
+        state: UserState.READY_FOR_REQUEST_TYPE,
+      },
     });
   }
 

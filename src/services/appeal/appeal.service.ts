@@ -11,14 +11,45 @@ class AppealService {
   async start(telegramId: number) {
     await this.prisma.user.update({
       where: { telegramId: telegramId },
-      data: { pendingRequestType: this.requestType, state: UserState.WAIT_REQUEST_CONTENT },
+      data: {
+        pendingRequestType: this.requestType,
+        pendingAppealDomain: null,
+        pendingAppealSubdomain: null,
+        state: UserState.WAIT_APPEAL_DOMAIN,
+      },
+    });
+  }
+
+  async chooseDomain(params: { telegramId: number; domain: string; shouldAskSubdomain: boolean }) {
+    await this.prisma.user.update({
+      where: { telegramId: params.telegramId },
+      data: {
+        pendingAppealDomain: params.domain,
+        pendingAppealSubdomain: null,
+        state: params.shouldAskSubdomain ? UserState.WAIT_APPEAL_SUBDOMAIN : UserState.WAIT_REQUEST_CONTENT,
+      },
+    });
+  }
+
+  async chooseSubdomain(params: { telegramId: number; subdomain: string }) {
+    await this.prisma.user.update({
+      where: { telegramId: params.telegramId },
+      data: {
+        pendingAppealSubdomain: params.subdomain,
+        state: UserState.WAIT_REQUEST_CONTENT,
+      },
     });
   }
 
   async clearPending(telegramId: number) {
     await this.prisma.user.update({
       where: { telegramId: telegramId },
-      data: { pendingRequestType: null, state: UserState.READY_FOR_REQUEST_TYPE },
+      data: {
+        pendingRequestType: null,
+        pendingAppealDomain: null,
+        pendingAppealSubdomain: null,
+        state: UserState.READY_FOR_REQUEST_TYPE,
+      },
     });
   }
 
@@ -29,6 +60,8 @@ class AppealService {
           requestNumber: `TEMP-${Date.now()}-${data.userId}`,
           userId: data.userId,
           type: this.requestType,
+          domain: data.domain,
+          subdomain: data.subdomain ?? null,
           text: data.text ?? null,
           status: RequestStatus.NEW,
         },
