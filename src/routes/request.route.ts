@@ -7,7 +7,15 @@ class RequestRoute {
 
   constructor(private readonly service: typeof requestService) {
     this.router = Router();
+    this.router.get("/:requestNumber", this.getRequestByNumber);
     this.router.get("/", this.getRequests);
+  }
+
+  private parseRequestNumber(raw: unknown): string | null {
+    if (typeof raw !== "string") return null;
+    const value = raw.trim();
+    if (value.length === 0) return null;
+    return value;
   }
 
   private parseTelegramId(raw: unknown): number | null | undefined {
@@ -104,6 +112,23 @@ class RequestRoute {
     });
 
     res.status(200).json(response);
+  };
+
+  private getRequestByNumber = async (req: Request, res: Response) => {
+    const requestNumber = this.parseRequestNumber(req.params.requestNumber);
+    if (!requestNumber) {
+      res.status(400).json({ message: "requestNumber is required" });
+      return;
+    }
+
+    const request = await this.service.getRequestByNumber({ requestNumber });
+
+    if (!request) {
+      res.status(404).json({ message: "request not found" });
+      return;
+    }
+
+    res.status(200).json(request);
   };
 }
 

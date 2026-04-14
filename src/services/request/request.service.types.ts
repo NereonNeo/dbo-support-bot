@@ -15,3 +15,7 @@ export type GetRequestsQuery = {
   inn?: string;
   telegramId?: number;
 };
+
+export type GetRequestByNumberQuery = {
+  requestNumber: string;
+};
