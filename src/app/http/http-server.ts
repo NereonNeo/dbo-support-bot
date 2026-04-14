@@ -1,4 +1,5 @@
 import { requestRoute } from "@/src/routes/request.route";
+import cors from "cors";
 import express from "express";
 
 class HttpServer {
@@ -10,6 +11,7 @@ class HttpServer {
 
   private configure() {
     this.app.use(express.json());
+    this.app.use(cors({ origin: ["https://dbo-app.yakubs.online", "http://localhost:3000"] }));
 
     this.app.get("/health", (_req, res) => {
       res.status(200).json({ ok: true });
