@@ -38,8 +38,9 @@ class RequestService {
   getRequests = async (query: GetRequestsQuery) => {
     const where: Prisma.RequestWhereInput = {
       ...(query.statuses && query.statuses.length > 0 ? { status: { in: query.statuses } } : {}),
-      ...(query.telegramId ? { user: { telegramId: query.telegramId } } : {}),
-      ...(query.inn ? { user: { ...(query.telegramId ? { telegramId: query.telegramId } : {}), inn: { contains: query.inn } } } : {}),
+      ...(query.type ? { type: query.type } : {}),
+      ...(query.domain ? { domain: { contains: query.domain, mode: "insensitive" } } : {}),
+      ...(query.inn ? { user: { inn: { contains: query.inn } } } : {}),
     };
 
     const skip = (query.page - 1) * query.limit;

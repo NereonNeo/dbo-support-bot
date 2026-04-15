@@ -1,4 +1,4 @@
-import { RequestStatus } from "@/generated/prisma/client";
+import { RequestStatus, RequestType } from "@/generated/prisma/client";
 
 export type RequestListQuery = {
   userId: string;
@@ -13,7 +13,8 @@ export type GetRequestsQuery = {
   limit: number;
   statuses?: RequestStatus[];
   inn?: string;
-  telegramId?: number;
+  domain?: string;
+  type?: RequestType;
 };
 
 export type GetRequestByNumberQuery = {

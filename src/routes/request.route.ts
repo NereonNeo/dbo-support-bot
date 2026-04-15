@@ -1,4 +1,4 @@
-import { RequestStatus } from "@/generated/prisma/client";
+import { RequestStatus, RequestType } from "@/generated/prisma/client";
 import { requestService } from "@/src/services/request/request.service";
 import { Request, Response, Router } from "express";
 
@@ -18,13 +18,12 @@ class RequestRoute {
     return value;
   }
 
-  private parseTelegramId(raw: unknown): number | null | undefined {
+  private parseDomain(raw: unknown): string | null | undefined {
     if (raw === undefined) return undefined;
     if (typeof raw !== "string") return null;
-    if (!/^\d+$/.test(raw)) return null;
-    const parsed = Number(raw);
-    if (!Number.isSafeInteger(parsed)) return null;
-    return parsed;
+    const value = raw.trim();
+    if (value.length === 0) return undefined;
+    return value;
   }
 
   private parsePage(raw: unknown): number | null {
@@ -70,6 +69,19 @@ class RequestRoute {
     return values as RequestStatus[];
   }
 
+  private parseType(raw: unknown): RequestType | null | undefined {
+    if (raw === undefined) return undefined;
+    if (typeof raw !== "string") return null;
+
+    const value = raw.trim();
+    if (value.length === 0) return undefined;
+
+    const allowed = new Set(Object.values(RequestType));
+    if (!allowed.has(value as RequestType)) return null;
+
+    return value as RequestType;
+  }
+
   private getRequests = async (req: Request, res: Response) => {
     const page = this.parsePage(req.query.page);
     if (page === null) {
@@ -83,9 +95,9 @@ class RequestRoute {
       return;
     }
 
-    const telegramId = this.parseTelegramId(req.query.telegramId);
-    if (telegramId === null) {
-      res.status(400).json({ message: "telegramId must be a valid number" });
+    const domain = this.parseDomain(req.query.domain);
+    if (domain === null) {
+      res.status(400).json({ message: "domain must be a string" });
       return;
     }
 
@@ -103,12 +115,21 @@ class RequestRoute {
       return;
     }
 
+    const type = this.parseType(req.query.type);
+    if (type === null) {
+      res.status(400).json({
+        message: `type must be one of: ${Object.values(RequestType).join(", ")}`,
+      });
+      return;
+    }
+
     const response = await this.service.getRequests({
       page,
       limit,
       statuses: statuses ?? undefined,
       inn: inn ?? undefined,
-      telegramId: telegramId ?? undefined,
+      domain: domain ?? undefined,
+      type: type ?? undefined,
     });
 
     res.status(200).json(response);
