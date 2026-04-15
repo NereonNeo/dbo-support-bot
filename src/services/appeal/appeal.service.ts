@@ -1,4 +1,5 @@
 import { RequestStatus, RequestType, UserState } from "@/generated/prisma/client";
+import { telegramFileService } from "@/src/shared/api/telegram-file.service";
 import { prismaService } from "@/src/shared/db/db-instance";
 import { formatRequestNumber } from "@/src/shared/utils/request-number";
 import { CreateAppealDTO } from "./appeal.service.types";
@@ -54,6 +55,8 @@ class AppealService {
   }
 
   async create(data: CreateAppealDTO) {
+    const attachments = await telegramFileService.populateFileUrls(data.attachments);
+
     return this.prisma.$transaction(async (tx) => {
       const created = await tx.request.create({
         data: {
@@ -73,11 +76,12 @@ class AppealService {
         data: { requestNumber },
       });
 
-      if (data.attachments.length > 0) {
+      if (attachments.length > 0) {
         await tx.requestAttachment.createMany({
-          data: data.attachments.map((attachment) => ({
+          data: attachments.map((attachment) => ({
             requestId: updated.id,
             telegramFileId: attachment.telegramFileId,
+            fileUrl: attachment.fileUrl ?? null,
             type: attachment.type,
             fileName: attachment.fileName ?? null,
             mimeType: attachment.mimeType ?? null,

@@ -21,6 +21,7 @@ class RequestService {
         id: true,
         type: true,
         telegramFileId: true,
+        fileUrl: true,
         fileName: true,
         mimeType: true,
         fileSize: true,

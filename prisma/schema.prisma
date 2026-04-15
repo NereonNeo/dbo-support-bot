@@ -48,6 +48,7 @@ model RequestAttachment {
   id             String         @id @default(uuid())
   requestId      String
   telegramFileId String
+  fileUrl        String?
   type           AttachmentType
   fileName       String?
   mimeType       String?

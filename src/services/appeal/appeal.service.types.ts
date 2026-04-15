@@ -2,6 +2,7 @@ import { AttachmentType } from "@/generated/prisma/client";
 
 export type CreateAppealAttachmentDTO = {
   telegramFileId: string;
+  fileUrl?: string | null;
   type: AttachmentType;
   fileName?: string | null;
   mimeType?: string | null;
