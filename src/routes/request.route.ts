@@ -7,6 +7,7 @@ class RequestRoute {
 
   constructor(private readonly service: typeof requestService) {
     this.router = Router();
+    this.router.patch("/:requestNumber/status", this.updateRequestStatus);
     this.router.get("/:requestNumber", this.getRequestByNumber);
     this.router.get("/", this.getRequests);
   }
@@ -82,6 +83,17 @@ class RequestRoute {
     return value as RequestType;
   }
 
+  private parseUpdatableStatus(raw: unknown): RequestStatus | null {
+    if (typeof raw !== "string") return null;
+
+    const value = raw.trim();
+    const allowed = new Set<RequestStatus>([RequestStatus.RESOLVED, RequestStatus.REJECTED]);
+
+    if (!allowed.has(value as RequestStatus)) return null;
+
+    return value as RequestStatus;
+  }
+
   private getRequests = async (req: Request, res: Response) => {
     const page = this.parsePage(req.query.page);
     if (page === null) {
@@ -150,6 +162,38 @@ class RequestRoute {
     }
 
     res.status(200).json(request);
+  };
+
+  private updateRequestStatus = async (req: Request, res: Response) => {
+    const requestNumber = this.parseRequestNumber(req.params.requestNumber);
+    if (!requestNumber) {
+      res.status(400).json({ message: "requestNumber is required" });
+      return;
+    }
+
+    const status = this.parseUpdatableStatus(req.body?.status);
+    if (!status) {
+      res.status(400).json({
+        message: `status must be one of: ${[RequestStatus.RESOLVED, RequestStatus.REJECTED].join(", ")}`,
+      });
+      return;
+    }
+
+    try {
+      const request = await this.service.updateRequestStatus({ requestNumber, status });
+      res.status(200).json(request);
+    } catch (error) {
+      if (
+        error instanceof Error &&
+        "code" in error &&
+        error.code === "P2025"
+      ) {
+        res.status(404).json({ message: "request not found" });
+        return;
+      }
+
+      throw error;
+    }
   };
 }
 

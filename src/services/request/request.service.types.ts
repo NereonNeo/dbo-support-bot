@@ -20,3 +20,8 @@ export type GetRequestsQuery = {
 export type GetRequestByNumberQuery = {
   requestNumber: string;
 };
+
+export type UpdateRequestStatusCommand = {
+  requestNumber: string;
+  status: RequestStatus;
+};

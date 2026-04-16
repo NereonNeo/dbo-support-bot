@@ -1,6 +1,6 @@
 import { Prisma } from "@/generated/prisma/client";
 import { prismaService } from "@/src/shared/db/db-instance";
-import { GetRequestByNumberQuery, GetRequestsQuery, RequestListQuery } from "./request.service.types";
+import { GetRequestByNumberQuery, GetRequestsQuery, RequestListQuery, UpdateRequestStatusCommand } from "./request.service.types";
 
 class RequestService {
   constructor(private readonly prisma: typeof prismaService) {}
@@ -71,6 +71,14 @@ class RequestService {
   getRequestByNumber = (query: GetRequestByNumberQuery) => {
     return this.prisma.request.findUnique({
       where: { requestNumber: query.requestNumber },
+      include: this.detailsInclude,
+    });
+  };
+
+  updateRequestStatus = (command: UpdateRequestStatusCommand) => {
+    return this.prisma.request.update({
+      where: { requestNumber: command.requestNumber },
+      data: { status: command.status },
       include: this.detailsInclude,
     });
   };
