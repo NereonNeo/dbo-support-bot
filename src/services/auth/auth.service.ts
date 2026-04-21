@@ -10,12 +10,12 @@ class AuthService {
     return response;
   }
 
-  async getOneUnique(telegramId: number) {
+  async getOneUnique(telegramId: string) {
     const response = await this.prisma.user.findUnique({ where: { telegramId: telegramId } });
     return response;
   }
 
-  async changeLanguage(telegramId: number, data: ChangeLanguageDTO) {
+  async changeLanguage(telegramId: string, data: ChangeLanguageDTO) {
     const response = await this.prisma.user.update({
       where: { telegramId: telegramId },
       data: { lang: data.lang, state: UserState.WAIT_CONTACT },
@@ -23,7 +23,7 @@ class AuthService {
     return response;
   }
 
-  async changePhone(telegramId: number, data: ChangePhoneDTO) {
+  async changePhone(telegramId: string, data: ChangePhoneDTO) {
     const response = await this.prisma.user.update({
       where: { telegramId: telegramId },
       data: { phone: data.phone, state: UserState.WAIT_INN },
@@ -31,7 +31,7 @@ class AuthService {
     return response;
   }
 
-  async changeInn(telegramId: number, data: ChangeInnDTO) {
+  async changeInn(telegramId: string, data: ChangeInnDTO) {
     const response = await this.prisma.user.update({
       where: { telegramId: telegramId },
       data: { inn: data.inn, state: UserState.READY_FOR_REQUEST_TYPE },
@@ -39,12 +39,12 @@ class AuthService {
     return response;
   }
 
-  async setState(telegramId: number, state: UserState) {
+  async setState(telegramId: string, state: UserState) {
     const response = await this.prisma.user.update({ where: { telegramId: telegramId }, data: { state } });
     return response;
   }
 
-  async isExist(telegramId: number) {
+  async isExist(telegramId: string) {
     const data = await this.getOneUnique(telegramId);
     if (!data) return false;
     return true;

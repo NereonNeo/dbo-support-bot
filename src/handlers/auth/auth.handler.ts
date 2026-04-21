@@ -12,7 +12,7 @@ class AuthHandler {
 
   welcome = async (ctx: CommandContext<CustomContext>) => {
     if (!ctx.from) return;
-    const user = await this.service.getOneUnique(ctx.from.id);
+    const user = await this.service.getOneUnique(String(ctx.from.id));
     if (!user || user.state === UserState.WAIT_LANGUAGE || !user.lang) {
       await ctx.replyWithPhoto("https://grammy.dev/images/grammY.png", { reply_markup: LanguageKeyboard, caption: t(Language.RU, "welcome") });
       return;

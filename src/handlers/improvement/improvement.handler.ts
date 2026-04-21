@@ -6,7 +6,7 @@ import { statusLabel, t } from "@/src/shared/locale/messages";
 import { buildRequestTypeKeyboard } from "@/src/shared/ui/request-type-keyboard";
 
 type BufferedImprovement = {
-  telegramId: number;
+  telegramId: string;
   userId: string;
   lang: Language;
   text: string | null;
@@ -149,7 +149,7 @@ class ImprovementHandler {
   private async submit(params: {
     ctx: CustomContext;
     userId: string;
-    telegramId: number;
+    telegramId: string;
     lang: Language;
     text: string | null;
     attachments: CreateImprovementAttachmentDTO[];

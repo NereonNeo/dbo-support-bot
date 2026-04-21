@@ -9,7 +9,7 @@ class BotMiddleware {
   attachUser: MiddlewareFn<CustomContext> = async (ctx, next) => {
     if (!ctx.from) return;
 
-    const telegramId = ctx.from.id;
+    const telegramId = String(ctx.from.id);
 
     const user = await this.service.getOneUnique(telegramId);
 

@@ -9,7 +9,7 @@ class AppealService {
 
   private readonly requestType = RequestType.APPEAL;
 
-  async start(telegramId: number) {
+  async start(telegramId: string) {
     await this.prisma.user.update({
       where: { telegramId: telegramId },
       data: {
@@ -21,7 +21,7 @@ class AppealService {
     });
   }
 
-  async chooseDomain(params: { telegramId: number; domain: string; shouldAskSubdomain: boolean }) {
+  async chooseDomain(params: { telegramId: string; domain: string; shouldAskSubdomain: boolean }) {
     await this.prisma.user.update({
       where: { telegramId: params.telegramId },
       data: {
@@ -32,7 +32,7 @@ class AppealService {
     });
   }
 
-  async chooseSubdomain(params: { telegramId: number; subdomain: string }) {
+  async chooseSubdomain(params: { telegramId: string; subdomain: string }) {
     await this.prisma.user.update({
       where: { telegramId: params.telegramId },
       data: {
@@ -42,7 +42,7 @@ class AppealService {
     });
   }
 
-  async clearPending(telegramId: number) {
+  async clearPending(telegramId: string) {
     await this.prisma.user.update({
       where: { telegramId: telegramId },
       data: {

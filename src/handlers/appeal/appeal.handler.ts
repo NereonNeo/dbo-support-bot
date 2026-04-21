@@ -2,18 +2,13 @@ import { AttachmentType, Language, RequestType, UserState } from "@/generated/pr
 import { appealService } from "@/src/services/appeal/appeal.service";
 import { CreateAppealAttachmentDTO } from "@/src/services/appeal/appeal.service.types";
 import { CustomContext } from "@/src/shared/api/api-instance";
-import {
-  APPEAL_DOMAINS,
-  findAppealDomainById,
-  findAppealDomainByLabel,
-  findAppealSubdomainByLabel,
-} from "@/src/shared/config/appeal-domains";
+import { APPEAL_DOMAINS, findAppealDomainById, findAppealDomainByLabel, findAppealSubdomainByLabel } from "@/src/shared/config/appeal-domains";
 import { statusLabel, t } from "@/src/shared/locale/messages";
 import { buildAppealDomainKeyboard, buildAppealSubdomainKeyboard } from "@/src/shared/ui/appeal-keyboards";
 import { buildRequestTypeKeyboard } from "@/src/shared/ui/request-type-keyboard";
 
 type BufferedAppeal = {
-  telegramId: number;
+  telegramId: string;
   userId: string;
   domain: string | null;
   subdomain: string | null;
@@ -68,7 +63,7 @@ class AppealHandler {
     if (ctx.user.state !== UserState.WAIT_APPEAL_DOMAIN || ctx.user.pendingRequestType !== this.requestType) return;
 
     const lang = ctx.user.lang ?? Language.RU;
-    const input = "text" in ctx.message ? ctx.message.text ?? "" : "";
+    const input = "text" in ctx.message ? (ctx.message.text ?? "") : "";
     const domain = findAppealDomainByLabel(lang, input);
 
     if (!domain) {
@@ -108,7 +103,7 @@ class AppealHandler {
       return;
     }
 
-    const input = "text" in ctx.message ? ctx.message.text ?? "" : "";
+    const input = "text" in ctx.message ? (ctx.message.text ?? "") : "";
     const subdomain = findAppealSubdomainByLabel(domain, lang, input);
     if (!subdomain) {
       await ctx.reply(t(lang, "appealSubdomainInvalid"), {
@@ -220,15 +215,15 @@ class AppealHandler {
       await this.flushMediaGroup(key, ctx);
     }, 800);
 
-      this.mediaGroups.set(key, {
-        telegramId: ctx.user!.telegramId,
-        userId: ctx.user!.id,
-        domain,
-        subdomain,
-        lang,
-        text,
-        attachments: [...attachments],
-        timeout,
+    this.mediaGroups.set(key, {
+      telegramId: ctx.user!.telegramId,
+      userId: ctx.user!.id,
+      domain,
+      subdomain,
+      lang,
+      text,
+      attachments: [...attachments],
+      timeout,
     });
   }
 
@@ -252,7 +247,7 @@ class AppealHandler {
   private async submit(params: {
     ctx: CustomContext;
     userId: string;
-    telegramId: number;
+    telegramId: string;
     domain: string | null | undefined;
     subdomain: string | null | undefined;
     lang: Language;

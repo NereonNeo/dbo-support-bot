@@ -5,7 +5,7 @@ export type RequestListQuery = {
 };
 
 export type RequestByTypeQuery = {
-  telegramId?: number;
+  telegramId?: string;
 };
 
 export type GetRequestsQuery = {
