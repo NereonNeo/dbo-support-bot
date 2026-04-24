@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "export DEBUG='grammy*' && tsx watch ./src/main.ts",
     "start": "tsx ./src/main.ts",
+    "build": "tsc -p tsconfig.json",
     "format": "prettier --write \"src/**/*.ts\" ",
     "prisma:migrate": "prisma migrate dev --config ./src/app/db/prisma.config.ts",
     "prisma:migrate:deploy": "prisma migrate deploy --config ./src/app/db/prisma.config.ts",

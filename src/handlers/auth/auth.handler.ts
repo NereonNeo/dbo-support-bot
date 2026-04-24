@@ -4,8 +4,11 @@ import { authService } from "@/src/services/auth/auth.service";
 import { CustomContext } from "@/src/shared/api/api-instance";
 import { t } from "@/src/shared/locale/messages";
 import { buildRequestTypeKeyboard } from "@/src/shared/ui/request-type-keyboard";
-import { CallbackQueryContext, CommandContext } from "grammy";
+import { CallbackQueryContext, CommandContext, InputFile } from "grammy";
+import { fileURLToPath } from "node:url";
 import { buildContactKeyboard, LanguageKeyboard } from "./auth.const";
+
+const WELCOME_LOGO_PATH = fileURLToPath(new URL("../../shared/images/bot-agrozamin-logo.jpg", import.meta.url));
 
 class AuthHandler {
   constructor(private readonly service: typeof authService) {}
@@ -14,7 +17,10 @@ class AuthHandler {
     if (!ctx.from) return;
     const user = await this.service.getOneUnique(String(ctx.from.id));
     if (!user || user.state === UserState.WAIT_LANGUAGE || !user.lang) {
-      await ctx.replyWithPhoto("https://grammy.dev/images/grammY.png", { reply_markup: LanguageKeyboard, caption: t(Language.RU, "welcome") });
+      await ctx.replyWithPhoto(new InputFile(WELCOME_LOGO_PATH), {
+        reply_markup: LanguageKeyboard,
+        caption: t(Language.RU, "welcome"),
+      });
       return;
     }
 

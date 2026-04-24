@@ -29,7 +29,8 @@ type LocaleDict = Record<LocaleKey, string>;
 
 const messages: Record<Language, LocaleDict> = {
   [Language.RU]: {
-    welcome: "Здравствуйте! Добро пожаловать. Здесь вы можете отправить обращение или предложение по улучшению. Для продолжения выберите язык.",
+    welcome:
+      "Здравствуйте! Добро пожаловать в бот поддержки AgroZamin Business.\nЗдесь вы можете отправить жалобу или предложение по улучшению.\nДля продолжения выберите язык.",
     chooseLanguage: "Пожалуйста, выберите язык.",
     askContact: "Пожалуйста, отправьте ваш номер телефона кнопкой ниже.",
     shareContactButton: "Отправить контакт",
@@ -37,7 +38,7 @@ const messages: Record<Language, LocaleDict> = {
     askInn: "Пожалуйста, отправьте ваш ИНН.",
     innInvalid: "ИНН введен некорректно. Пожалуйста, отправьте корректный ИНН.",
     chooseRequestType: "Выберите тип заявки:",
-    requestTypeAppeal: "Обращение",
+    requestTypeAppeal: "Жалоба",
     requestTypeImprovement: "Предложение",
     askAppealDomain: "Выберите домен проблемы:",
     appealDomainInvalid: "Выберите домен проблемы кнопкой ниже.",
@@ -54,7 +55,8 @@ const messages: Record<Language, LocaleDict> = {
     requestListNoText: "Без текста",
   },
   [Language.UZ]: {
-    welcome: "Assalomu alaykum! Bu yerda murojaat yoki taklif yuborishingiz mumkin. Davom etish uchun tilni tanlang.",
+    welcome:
+      "Assalomu alaykum! AgroZamin qo‘llab-quvvatlash botiga xush kelibsiz.\nBu yerda shikoyat yoki taklif yuborishingiz mumkin.\nDavom etish uchun tilni tanlang.",
     chooseLanguage: "Iltimos, tilni tanlang.",
     askContact: "Iltimos, quyidagi tugma orqali telefon raqamingizni yuboring.",
     shareContactButton: "Kontaktni yuborish",
