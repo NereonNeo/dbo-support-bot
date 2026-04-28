@@ -19,6 +19,7 @@ export type LocaleKey =
   | "emptyRequest"
   | "somethingWentWrong"
   | "requestCreated"
+  | "requestStatusChanged"
   | "requestList"
   | "requestListTitle"
   | "requestListEmpty"
@@ -48,6 +49,8 @@ const messages: Record<Language, LocaleDict> = {
     emptyRequest: "Заявка не может быть пустой. Отправьте текст, фото, видео или оба варианта.",
     somethingWentWrong: "Произошла ошибка при отправке заявки. Пожалуйста, попробуйте позже.",
     requestCreated: "Ваша заявка принята.\nНомер заявки: {requestNumber}\nСтатус: {status}\nСкоро с вами свяжутся.",
+    requestStatusChanged:
+      "Статус вашей заявки под номером: <b>{requestNumber}</b>\nизменен на <b>{status}</b>, пожалуйста проверьте всё\nЕсли будут вопросы — обращайтесь сюда:\n@growth_ish",
     requestList: "Список заявок",
     requestListTitle: "Ваши заявки:",
     requestListEmpty: "У вас пока нет заявок.",
@@ -74,6 +77,8 @@ const messages: Record<Language, LocaleDict> = {
     emptyRequest: "Ariza bo‘sh bo‘lishi mumkin emas. Matn, foto, video yoki ikkalasini yuboring.",
     somethingWentWrong: "Arizani yuborishda xatolik yuz berdi. Iltimos, keyinroq urinib ko‘ring.",
     requestCreated: "Arizangiz qabul qilindi.\nAriza raqami: {requestNumber}\nStatus: {status}\nTez orada siz bilan bog‘lanishadi.",
+    requestStatusChanged:
+      "Arizangiz raqami: <b>{requestNumber}</b>\nstatusi <b>{status}</b> ga o‘zgardi, iltimos tekshirib ko‘ring\nSavollar bo‘lsa — shu yerga yozing:\n@growth_ish",
     requestList: "Arizalar listi",
     requestListTitle: "Sizning arizalaringiz:",
     requestListEmpty: "Hozircha arizalar yo‘q.",
@@ -99,6 +104,8 @@ const messages: Record<Language, LocaleDict> = {
     emptyRequest: "The request cannot be empty. Send text, photo, video, or both.",
     somethingWentWrong: "An error occurred while sending the request. Please try again later.",
     requestCreated: "Your request has been accepted.\nRequest number: {requestNumber}\nStatus: {status}\nWe will contact you soon.",
+    requestStatusChanged:
+      "Your request number: <b>{requestNumber}</b>\nstatus has been changed to <b>{status}</b>, please check it\nIf you have any questions, contact us here:\n@growth_ish",
     requestList: "Request List",
     requestListTitle: "Your requests:",
     requestListEmpty: "You do not have any requests yet.",

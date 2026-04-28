@@ -1,5 +1,7 @@
 import { Prisma } from "@/generated/prisma/client";
 import { prismaService } from "@/src/shared/db/db-instance";
+import { botInstance } from "@/src/shared/api/api-instance";
+import { statusLabel, t } from "@/src/shared/locale/messages";
 import { GetRequestByNumberQuery, GetRequestsQuery, RequestListQuery, UpdateRequestStatusCommand } from "./request.service.types";
 
 class RequestService {
@@ -75,12 +77,33 @@ class RequestService {
     });
   };
 
-  updateRequestStatus = (command: UpdateRequestStatusCommand) => {
-    return this.prisma.request.update({
+  updateRequestStatus = async (command: UpdateRequestStatusCommand) => {
+    const before = await this.prisma.request.findUnique({
+      where: { requestNumber: command.requestNumber },
+      select: { status: true },
+    });
+
+    const updated = await this.prisma.request.update({
       where: { requestNumber: command.requestNumber },
       data: { status: command.status },
       include: this.detailsInclude,
     });
+
+    if (before?.status !== updated.status && updated.user?.telegramId) {
+      const lang = updated.user.lang;
+      const text = t(lang, "requestStatusChanged", {
+        requestNumber: updated.requestNumber,
+        status: statusLabel(lang, updated.status),
+      });
+
+      try {
+        await botInstance.getSnapshot().api.sendMessage(updated.user.telegramId, text, { parse_mode: "HTML" });
+      } catch (error) {
+        console.error("Failed to send request status update message:", error);
+      }
+    }
+
+    return updated;
   };
 }
 

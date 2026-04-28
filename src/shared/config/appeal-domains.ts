@@ -229,11 +229,7 @@ export const findAppealDomainByLabel = (lang: Language, label: string): AppealDo
   return APPEAL_DOMAINS.find((domain) => domain.label[lang] === normalizedLabel);
 };
 
-export const findAppealSubdomainByLabel = (
-  domain: AppealDomain,
-  lang: Language,
-  label: string,
-): AppealSubdomain | undefined => {
+export const findAppealSubdomainByLabel = (domain: AppealDomain, lang: Language, label: string): AppealSubdomain | undefined => {
   const normalizedLabel = label.trim();
   return domain.subdomains.find((subdomain) => subdomain.label[lang] === normalizedLabel);
 };

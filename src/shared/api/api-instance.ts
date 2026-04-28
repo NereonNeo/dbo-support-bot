@@ -24,9 +24,7 @@ class CoreBot {
       const message = error instanceof Error ? error.message : String(error);
 
       if (message.includes("409") || message.includes("terminated by other getUpdates request")) {
-        console.error(
-          "Telegram polling conflict (409): another bot instance is already running with this token.",
-        );
+        console.error("Telegram polling conflict (409): another bot instance is already running with this token.");
         return;
       }
 

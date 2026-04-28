@@ -183,11 +183,7 @@ class RequestRoute {
       const request = await this.service.updateRequestStatus({ requestNumber, status });
       res.status(200).json(request);
     } catch (error) {
-      if (
-        error instanceof Error &&
-        "code" in error &&
-        error.code === "P2025"
-      ) {
+      if (error instanceof Error && "code" in error && error.code === "P2025") {
         res.status(404).json({ message: "request not found" });
         return;
       }
