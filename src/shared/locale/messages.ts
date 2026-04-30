@@ -8,6 +8,8 @@ export type LocaleKey =
   | "contactInvalid"
   | "askInn"
   | "innInvalid"
+  | "back"
+  | "mainMenu"
   | "chooseRequestType"
   | "requestTypeAppeal"
   | "requestTypeImprovement"
@@ -36,13 +38,15 @@ const messages: Record<Language, LocaleDict> = {
     askContact: "Пожалуйста, отправьте ваш номер телефона кнопкой ниже.",
     shareContactButton: "Отправить контакт",
     contactInvalid: "Не удалось получить корректный номер телефона. Пожалуйста, отправьте контакт кнопкой ниже.",
-    askInn: "Пожалуйста, отправьте ваш ИНН.",
-    innInvalid: "ИНН введен некорректно. Пожалуйста, отправьте корректный ИНН.",
+    askInn: "Пожалуйста, отправьте ваш ИНН или ПИНФЛ.",
+    innInvalid: "ИНН/ПИНФЛ введен некорректно. Отправьте 9 цифр (ИНН) или 14 цифр (ПИНФЛ).",
+    back: "Назад",
+    mainMenu: "Основное меню",
     chooseRequestType: "Выберите тип заявки:",
-    requestTypeAppeal: "Жалоба",
+    requestTypeAppeal: "Проблема",
     requestTypeImprovement: "Предложение",
-    askAppealDomain: "Выберите домен проблемы:",
-    appealDomainInvalid: "Выберите домен проблемы кнопкой ниже.",
+    askAppealDomain: "Выберите категорию проблемы:",
+    appealDomainInvalid: "Выберите категорию проблемы кнопкой ниже.",
     askAppealSubdomain: "Выберите суть проблемы:",
     appealSubdomainInvalid: "Выберите суть проблемы кнопкой ниже.",
     askRequestContent: "Отправьте текст заявки, фото, видео или оба варианта вместе.",
@@ -64,13 +68,15 @@ const messages: Record<Language, LocaleDict> = {
     askContact: "Iltimos, quyidagi tugma orqali telefon raqamingizni yuboring.",
     shareContactButton: "Kontaktni yuborish",
     contactInvalid: "Telefon raqami noto‘g‘ri. Iltimos, kontaktni quyidagi tugma orqali yuboring.",
-    askInn: "Iltimos, INN raqamingizni yuboring.",
-    innInvalid: "INN noto‘g‘ri kiritildi. Iltimos, INNni qayta yuboring.",
+    askInn: "Iltimos, INN yoki PINFL raqamingizni yuboring.",
+    innInvalid: "INN/PINFL noto‘g‘ri kiritildi. Iltimos, 9 ta raqam (INN) yoki 14 ta raqam (PINFL) yuboring.",
+    back: "Orqaga",
+    mainMenu: "Asosiy menyu",
     chooseRequestType: "Ariza turini tanlang:",
-    requestTypeAppeal: "Murojaat",
+    requestTypeAppeal: "Muommo",
     requestTypeImprovement: "Taklif",
-    askAppealDomain: "Muammo domenini tanlang:",
-    appealDomainInvalid: "Quyidagi tugma orqali muammo domenini tanlang.",
+    askAppealDomain: "Muammo toifasini tanlang:",
+    appealDomainInvalid: "Quyidagi tugma orqali muammo toifasini tanlang.",
     askAppealSubdomain: "Muammo turini tanlang:",
     appealSubdomainInvalid: "Quyidagi tugma orqali muammo turini tanlang.",
     askRequestContent: "Ariza matnini, foto, video yoki ikkalasini birga yuboring.",
@@ -79,7 +85,7 @@ const messages: Record<Language, LocaleDict> = {
     requestCreated: "Arizangiz qabul qilindi.\nAriza raqami: {requestNumber}\nStatus: {status}\nTez orada siz bilan bog‘lanishadi.",
     requestStatusChanged:
       "Arizangiz raqami: <b>{requestNumber}</b>\nstatusi <b>{status}</b> ga o‘zgardi, iltimos tekshirib ko‘ring\nSavollar bo‘lsa — shu yerga yozing:\n@growth_ish",
-    requestList: "Arizalar listi",
+    requestList: "Mening arizalarim",
     requestListTitle: "Sizning arizalaringiz:",
     requestListEmpty: "Hozircha arizalar yo‘q.",
     requestListItem: "Mavzu: {title}\nRaqam: {requestNumber}\nStatus: {status}",
@@ -91,8 +97,10 @@ const messages: Record<Language, LocaleDict> = {
     askContact: "Please share your phone number using the button below.",
     shareContactButton: "Share contact",
     contactInvalid: "Unable to get a valid phone number. Please send your contact using the button below.",
-    askInn: "Please send your INN.",
-    innInvalid: "The INN is invalid. Please send a correct INN.",
+    askInn: "Please send your INN or PINFL.",
+    innInvalid: "The INN/PINFL is invalid. Send 9 digits (INN) or 14 digits (PINFL).",
+    back: "Back",
+    mainMenu: "Main menu",
     chooseRequestType: "Choose request type:",
     requestTypeAppeal: "Appeal",
     requestTypeImprovement: "Improvement",
@@ -114,7 +122,7 @@ const messages: Record<Language, LocaleDict> = {
   },
 };
 
-const FALLBACK_LANGUAGE = Language.RU;
+const FALLBACK_LANGUAGE = Language.UZ;
 
 export const resolveLanguage = (lang?: Language | null): Language => {
   if (!lang) return FALLBACK_LANGUAGE;

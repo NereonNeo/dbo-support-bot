@@ -64,7 +64,14 @@ class AppealHandler {
 
     const lang = ctx.user.lang ?? Language.RU;
     const input = "text" in ctx.message ? (ctx.message.text ?? "") : "";
-    const domain = findAppealDomainByLabel(lang, input);
+    const normalizedInput = input.trim();
+
+    if (normalizedInput === t(lang, "back") || normalizedInput === t(lang, "mainMenu")) {
+      await this.service.clearPending(ctx.user.telegramId);
+      await ctx.reply(t(lang, "chooseRequestType"), { reply_markup: buildRequestTypeKeyboard(lang) });
+      return;
+    }
+    const domain = findAppealDomainByLabel(lang, normalizedInput);
 
     if (!domain) {
       await ctx.reply(t(lang, "appealDomainInvalid"), {
@@ -95,6 +102,21 @@ class AppealHandler {
     if (ctx.user.state !== UserState.WAIT_APPEAL_SUBDOMAIN || ctx.user.pendingRequestType !== this.requestType) return;
 
     const lang = ctx.user.lang ?? Language.RU;
+    const rawInput = "text" in ctx.message ? (ctx.message.text ?? "") : "";
+    const normalizedInput = rawInput.trim();
+
+    if (normalizedInput === t(lang, "mainMenu")) {
+      await this.service.clearPending(ctx.user.telegramId);
+      await ctx.reply(t(lang, "chooseRequestType"), { reply_markup: buildRequestTypeKeyboard(lang) });
+      return;
+    }
+
+    if (normalizedInput === t(lang, "back")) {
+      await this.service.start(ctx.user.telegramId);
+      await this.promptDomainSelection(ctx);
+      return;
+    }
+
     const domain = findAppealDomainById(ctx.user.pendingAppealDomain);
 
     if (!domain) {
@@ -103,8 +125,7 @@ class AppealHandler {
       return;
     }
 
-    const input = "text" in ctx.message ? (ctx.message.text ?? "") : "";
-    const subdomain = findAppealSubdomainByLabel(domain, lang, input);
+    const subdomain = findAppealSubdomainByLabel(domain, lang, normalizedInput);
     if (!subdomain) {
       await ctx.reply(t(lang, "appealSubdomainInvalid"), {
         reply_markup: buildAppealSubdomainKeyboard(lang, domain),

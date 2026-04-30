@@ -101,7 +101,7 @@ class AuthHandler {
     if (ctx.user.state !== UserState.WAIT_INN) return;
 
     const inn = (ctx.message.text ?? "").trim();
-    const isValid = /^[0-9]{9}$/.test(inn);
+    const isValid = /^\d{9}$/.test(inn) || /^\d{14}$/.test(inn);
     if (!isValid) {
       await ctx.reply(t(ctx.user.lang ?? Language.RU, "innInvalid"));
       return;

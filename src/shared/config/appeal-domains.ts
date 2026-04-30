@@ -17,17 +17,17 @@ export const APPEAL_DOMAINS: AppealDomain[] = [
   {
     id: "AUTH",
     label: {
-      [Language.RU]: "Регистрация-Вход",
-      [Language.UZ]: "Royxatdan otish-Kirish",
-      [Language.EN]: "Registration-Login",
+      [Language.RU]: "Регистрация/Вход",
+      [Language.UZ]: "Royxatdan otish/Kirish",
+      [Language.EN]: "Registration/Login",
     },
     subdomains: [
       {
         id: "EIMZO_CONFIRMATION",
         label: {
-          [Language.RU]: "Подтверждение eimzo",
-          [Language.UZ]: "EIMZO tasdiqlash",
-          [Language.EN]: "EIMZO confirmation",
+          [Language.RU]: "Подтверждение E-IMZO",
+          [Language.UZ]: "E-IMZO tasdiqlash",
+          [Language.EN]: "E-IMZO confirmation",
         },
       },
       {
@@ -36,6 +36,14 @@ export const APPEAL_DOMAINS: AppealDomain[] = [
           [Language.RU]: "MyID",
           [Language.UZ]: "MyID",
           [Language.EN]: "MyID",
+        },
+      },
+      {
+        id: "DIRECTOR_CHANGED",
+        label: {
+          [Language.RU]: "Сменился директор",
+          [Language.UZ]: "Direktor ozgardi",
+          [Language.EN]: "Director changed",
         },
       },
       {
@@ -54,14 +62,7 @@ export const APPEAL_DOMAINS: AppealDomain[] = [
           [Language.EN]: "MFO",
         },
       },
-      {
-        id: "DIRECTOR_CHANGED",
-        label: {
-          [Language.RU]: "Сменился директор",
-          [Language.UZ]: "Direktor ozgardi",
-          [Language.EN]: "Director changed",
-        },
-      },
+
       {
         id: "COMPANY_OR_EMPLOYEE_ADDITION",
         label: {
@@ -76,7 +77,7 @@ export const APPEAL_DOMAINS: AppealDomain[] = [
     id: "TRANSACTION",
     label: {
       [Language.RU]: "Оплата",
-      [Language.UZ]: "Tolov",
+      [Language.UZ]: "To'lov",
       [Language.EN]: "Transactions",
     },
     subdomains: [
@@ -84,7 +85,7 @@ export const APPEAL_DOMAINS: AppealDomain[] = [
         id: "PAYMENT_ORDER",
         label: {
           [Language.RU]: "Платежное поручение",
-          [Language.UZ]: "Tolov topshirigi",
+          [Language.UZ]: "To'lov topshiriqnomasi",
           [Language.EN]: "Payment order",
         },
       },
@@ -92,7 +93,7 @@ export const APPEAL_DOMAINS: AppealDomain[] = [
         id: "INTERNAL_TRANSFER",
         label: {
           [Language.RU]: "Между своими счетами",
-          [Language.UZ]: "Oz hisoblari orasida",
+          [Language.UZ]: "Mening hisoblarim o'rtasida",
           [Language.EN]: "Between own accounts",
         },
       },
@@ -100,7 +101,7 @@ export const APPEAL_DOMAINS: AppealDomain[] = [
         id: "FAST_PAYMENTS_24_7",
         label: {
           [Language.RU]: "Система быстрых платежей 24/7",
-          [Language.UZ]: "24/7 tezkor tolovlar",
+          [Language.UZ]: "Tezkor to'lov tizimi 24/7",
           [Language.EN]: "Fast payments 24/7",
         },
       },
@@ -108,7 +109,7 @@ export const APPEAL_DOMAINS: AppealDomain[] = [
         id: "BUDGET_PAYMENTS",
         label: {
           [Language.RU]: "Бюджетные платежи",
-          [Language.UZ]: "Budjet tolovlari",
+          [Language.UZ]: "G'aznachilikka to'lov",
           [Language.EN]: "Budget payments",
         },
       },
@@ -142,7 +143,7 @@ export const APPEAL_DOMAINS: AppealDomain[] = [
     id: "ACCOUNT",
     label: {
       [Language.RU]: "Счета",
-      [Language.UZ]: "Hisoblar",
+      [Language.UZ]: "Hisob raqam",
       [Language.EN]: "Accounts",
     },
     subdomains: [
@@ -168,7 +169,7 @@ export const APPEAL_DOMAINS: AppealDomain[] = [
         id: "REPAYMENT_SCHEDULE",
         label: {
           [Language.RU]: "График погашения",
-          [Language.UZ]: "Tolov jadvali",
+          [Language.UZ]: "To'lov jadvali",
           [Language.EN]: "Repayment schedule",
         },
       },
@@ -176,7 +177,7 @@ export const APPEAL_DOMAINS: AppealDomain[] = [
         id: "CREDIT_PAYMENT",
         label: {
           [Language.RU]: "Оплата кредита",
-          [Language.UZ]: "Kredit tolovi",
+          [Language.UZ]: "Kredit to'lovi",
           [Language.EN]: "Credit payment",
         },
       },
@@ -212,7 +213,7 @@ export const APPEAL_DOMAINS: AppealDomain[] = [
     id: "OTHER",
     label: {
       [Language.RU]: "Другое",
-      [Language.UZ]: "Boshqa",
+      [Language.UZ]: "Boshqa masala",
       [Language.EN]: "Other",
     },
     subdomains: [],
